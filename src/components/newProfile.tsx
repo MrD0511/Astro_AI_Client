@@ -109,7 +109,8 @@ export default function NewProfile() {
     };
 
     try {
-      const res = await fetch("http://localhost:8000/start_session", {
+      const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+      const res = await fetch(`${url}/start_session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(birthDetailForApi),

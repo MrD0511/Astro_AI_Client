@@ -134,7 +134,8 @@ export default function ChatPage() {
     });
 
     try {
-      const response = await fetch("http://localhost:8000/chat/stream", {
+      const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+      const response = await fetch(`${url}/chat/stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
