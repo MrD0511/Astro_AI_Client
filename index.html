@@ -1,10 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/solar-system-2.png" />
+    <link rel="icon" type="image/png" href="/solar-system-2.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Astro AI</title>
+    <meta name="description" content="Astro AI helps you explore astrological insights with the power of AI." />
+    <meta name="keywords" content="astrology, AI astrologer, horoscope, birth chart, kundli, Astro AI" />
+    <meta name="author" content="Dhruv Sharma" />
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Astro AI" />
+    <meta property="og:description" content="Get AI-generated astrological insights tailored just for you." />
+    <meta property="og:image" content="https://astroai.vercel.app/assets/creator.jpg" />
+    <meta property="og:url" content="https://astroai.vercel.app" />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Analytics - Load only on production domain -->
+    <script>
+      if (window.location.hostname === 'astroai.vercel.app' || window.location.hostname === 'www.astroai.vercel.app') {
+        const script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-XB9WGZFV9J';
+        script.async = true;
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XB9WGZFV9J');
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
