@@ -10,6 +10,7 @@ import NavBar from './navBar';
 // Fix leaflet icon path issues
 // ts-expect-error: _getIconUrl is a private property not typed in leaflet
 
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
