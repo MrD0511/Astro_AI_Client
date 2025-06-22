@@ -18,18 +18,14 @@
     <meta property="og:type" content="website" />
 
     <!-- Google Analytics - Load only on production domain -->
+ <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XB9WGZFV9J"></script>
     <script>
-      if (window.location.hostname === 'astroai.vercel.app' || window.location.hostname === 'www.astroai.vercel.app') {
-        const script = document.createElement('script');
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-XB9WGZFV9J';
-        script.async = true;
-        document.head.appendChild(script);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-XB9WGZFV9J');
-      }
+      gtag('config', 'G-XB9WGZFV9J');
     </script>
   </head>
   <body>
