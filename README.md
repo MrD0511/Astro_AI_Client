@@ -117,13 +117,13 @@ import.meta.env.VITE_BACKEND_URL
 ## 📸 Screenshots
 
 ### Home
-![Home page screenshot](./screenshots/home_page.png)
+![Home page screenshot](screenshots/home_page.png)
 
 ### Profiles
-![Profiles page screenshot](./screenshots/profiles_page.png)
+![Profiles page screenshot](screenshots/profiles_page.png)
 
 ### Chat interface
-![Chat Interface]('./screenshots/chat_page.png)
+![Chat Interface](screenshots/chat_page.png)
 
 ---
 
