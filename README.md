@@ -87,8 +87,7 @@ npm run dev       # or pnpm dev / yarn dev
 
 Make sure the backend is up for chat functionality to work.
 
-Refer to the same project server repository
-
+---
 
 ## ⚙️ Configuration
 
@@ -113,6 +112,8 @@ import.meta.env.VITE_BACKEND_URL
 
 - Use dev tools → Application → IndexedDB to inspect local DB.
 
+---
+
 ## 📸 Screenshots
 
 ### Home
@@ -124,6 +125,7 @@ import.meta.env.VITE_BACKEND_URL
 ### Chat interface
 ![Chat Interface]('./screenshots/chat_page.png)
 
+---
 
 ## 🤝 Contribution
 - Fork this repository
@@ -134,9 +136,12 @@ import.meta.env.VITE_BACKEND_URL
 
 - Push and open a PR
 
+---
+
 ## 📄 License
 [MIT License](./LICENSE) © 2025 Dhruv Sharma
 
+---
 
 ## ✨ Credits
 Made with 💫 by Dhruv Sharma
