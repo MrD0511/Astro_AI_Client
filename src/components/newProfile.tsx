@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Search, MapPin, Calendar, Clock, User, ArrowLeft } from 'lucide-react';
+import { Search, MapPin, Calendar, Clock, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../db'; // adjust import if needed
 import NavBar from './navBar';
@@ -33,7 +33,6 @@ export default function NewProfile() {
   const [placeName, setPlaceName] = useState("unknown");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<{ display_name: string; lat: number; lon: number }[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (field: string, value: string) => {
@@ -61,7 +60,6 @@ export default function NewProfile() {
 
   const searchPlaces = async (query: string) => {
     if (!query.trim()) return setSearchResults([]);
-    setIsSearching(true);
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`
@@ -75,8 +73,6 @@ export default function NewProfile() {
       setSearchResults(results);
     } catch {
       setSearchResults([]);
-    } finally {
-      setIsSearching(false);
     }
   };
 
