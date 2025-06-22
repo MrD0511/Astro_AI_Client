@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-black text-white;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
+/* Custom thin scrollbar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(55, 65, 81) #000000 ; /* thumb color, track color */
+}
+
+/* Webkit custom scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px; /* horizontal scrollbar height */
+  width: 6px; /* vertical scrollbar width */
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #1F2937; /* track color */
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #313a47; /* thumb color */
+  border-radius: 9999px;
+  border: 2px solid #1F2937; /* space around thumb */
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #323946; /* thumb hover */
+}
