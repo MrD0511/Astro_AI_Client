@@ -1,13 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Mock navigation functions for demo
-  const navigate = (path: string) => {
-    console.log(`Navigating to: ${path}`);
-    setIsMenuOpen(false);
-  };
+  const navigate = useNavigate();
 
   return (
     <nav className='w-full bg-black border-b border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-black/95'>
@@ -29,7 +25,7 @@ function NavBar() {
             <div className='flex items-center gap-4'>
               <button 
                 className='text-gray-300 hover:text-white transition-colors duration-300 font-medium'
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/profiles")}
               >
                 Profiles
               </button>
@@ -63,7 +59,7 @@ function NavBar() {
           <div className='py-4 space-y-3 border-t border-gray-800'>
             <button 
               className='block w-full text-left text-gray-300 hover:text-white transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-gray-900'
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/profiles")}
             >
               Dashboard
             </button>

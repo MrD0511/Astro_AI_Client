@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Search, MapPin, Calendar, Clock, User, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { db } from '../../db'; // adjust import if needed
 import NavBar from './navBar';
 
-// Fix leaflet marker icon paths
-delete L.Icon.Default.prototype._getIconUrl;
+// Fix leaflet icon path issues
+// ts-expect-error: _getIconUrl is a private property not typed in leaflet
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-function LocationMarker({ onSelect }) {
+function LocationMarker({ onSelect }: { onSelect: (coords: [number, number]) => void }) {
   useMapEvents({
     click(e) {
       onSelect([e.latlng.lat, e.latlng.lng]);
@@ -23,58 +27,40 @@ function LocationMarker({ onSelect }) {
 }
 
 export default function NewProfile() {
+  const [formData, setFormData] = useState({ name: '', dob: '', tob: '' });
+  const [errors, setErrors] = useState<any>({});
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [placeName, setPlaceName] = useState("unknown");
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<{ display_name: string; lat: number; lon: number }[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [formData, setFormData] = useState({ name: "", dob: "", tob: "" });
-  const [errors, setErrors] = useState({});
-
-  const handleNavigation = (path: string) => {
-    console.log(`Navigate to: ${path}`);
-  };
+  const navigate = useNavigate();
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+      setErrors((prev: any) => ({ ...prev, [field]: '' }));
     }
-  };
-
-  const validateForm = () => {
-    const newErrors: any = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.dob) newErrors.dob = "Date of Birth is required";
-    if (!formData.tob) newErrors.tob = "Time of Birth is required";
-    if (!position) newErrors.location = "Please select a location on the map or search";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const reverseGeocode = async (lat: number, lng: number) => {
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`
-      );
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
       const data = await res.json();
-      return data?.display_name || `Location at ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-    } catch (e) {
+      const city =
+        data.address?.city ||
+        data.address?.town ||
+        data.address?.village ||
+        data.address?.state ||
+        data.display_name;
+      return city;
+    } catch {
       return `Location at ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
     }
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    console.log("Profile data:", { ...formData, position, placeName });
-    alert("Profile created successfully!");
-    handleNavigation("/dashboard");
-  };
-
   const searchPlaces = async (query: string) => {
     if (!query.trim()) return setSearchResults([]);
-
     setIsSearching(true);
     try {
       const res = await fetch(
@@ -87,7 +73,7 @@ export default function NewProfile() {
         lon: parseFloat(item.lon),
       }));
       setSearchResults(results);
-    } catch (e) {
+    } catch {
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -96,23 +82,73 @@ export default function NewProfile() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (searchQuery.trim()) searchPlaces(searchQuery);
+      searchPlaces(searchQuery);
     }, 300);
     return () => clearTimeout(timeout);
   }, [searchQuery]);
 
+  const validateForm = () => {
+    const newErrors: any = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.dob) newErrors.dob = "Date of Birth is required";
+    if (!formData.tob) newErrors.tob = "Time of Birth is required";
+    if (!position) newErrors.location = "Please select a location";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    const [lat, lon] = position!;
+    const dateTimeStr = `${formData.dob}T${formData.tob}`;
+    const birthDateTime = new Date(dateTimeStr);
+
+    const birthDetailForApi = {
+      name: formData.name,
+      birthDateTime,
+      birthPlace: placeName,
+      latitude: lat,
+      longitude: lon,
+    };
+
+    try {
+      const res = await fetch("http://localhost:8000/start_session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(birthDetailForApi),
+      });
+
+      if (!res.ok) throw new Error("Network response was not ok");
+
+      const sessionData = await res.json();
+      if (!sessionData.session_id) throw new Error("Session ID not found");
+
+      const birthDetail = {
+        ...birthDetailForApi,
+        session_id: sessionData.session_id,
+      };
+
+      await db.BirthDetails.add(birthDetail);
+      navigate("/profiles");
+    } catch (err) {
+      alert("Failed to submit profile: " + err);
+      console.error(err);
+    }
+  };
+
   const handlePlaceSelect = async (place: any) => {
-    setPosition([place.lat, place.lon]);
+    const coords: [number, number] = [place.lat, place.lon];
+    const name = await reverseGeocode(place.lat, place.lon);
+    setPosition(coords);
+    setPlaceName(name);
     setSearchQuery(place.display_name);
     setSearchResults([]);
-    const name = await reverseGeocode(place.lat, place.lon);
-    setPlaceName(name);
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-black text-white">
       <NavBar />
-
       <div className="flex-1 flex justify-center px-4 py-8">
         <div className="w-full max-w-4xl">
           <div className="text-center mb-12">
@@ -123,7 +159,7 @@ export default function NewProfile() {
           </div>
 
           <div className="bg-gradient-to-b from-gray-900 to-black border border-gray-700 rounded-xl p-8 shadow-2xl space-y-8">
-            {/* Name */}
+            {/* Name Field */}
             <div className="space-y-2">
               <label className="flex gap-2 font-semibold text-lg items-center">
                 <User size={18} /> Full Name
@@ -176,18 +212,13 @@ export default function NewProfile() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for your birth city or click on the map"
+                  placeholder="Search or click on map"
                   className="w-full bg-black border border-gray-700 p-3 pl-10 rounded-lg text-white placeholder-gray-400"
                 />
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                   <Search size={18} />
                 </div>
-                {isSearching && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin h-5 w-5 border-b-2 border-white rounded-full"></div>
-                )}
               </div>
-
-              {/* Search Results */}
               {searchResults.length > 0 && (
                 <div className="bg-gray-800 rounded-md overflow-hidden border border-gray-700">
                   {searchResults.map((place, i) => (
@@ -201,6 +232,7 @@ export default function NewProfile() {
                   ))}
                 </div>
               )}
+              {errors.location && <p className="text-red-400 text-sm">{errors.location}</p>}
             </div>
 
             {/* Map */}
@@ -218,14 +250,14 @@ export default function NewProfile() {
               <LocationMarker
                 onSelect={async (coords) => {
                   setPosition(coords);
-                  setSearchQuery(await reverseGeocode(coords[0], coords[1]));
-                  setPlaceName(await reverseGeocode(coords[0], coords[1]));
+                  const name = await reverseGeocode(coords[0], coords[1]);
+                  setSearchQuery(name);
+                  setPlaceName(name);
                 }}
               />
             </MapContainer>
-            {errors.location && <p className="text-red-400 text-sm">{errors.location}</p>}
 
-            {/* Location Preview */}
+            {/* Location Info */}
             {position && (
               <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm">
                 <p className="text-green-400 font-semibold">Selected Location:</p>
@@ -236,13 +268,32 @@ export default function NewProfile() {
               </div>
             )}
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
               onClick={handleSubmit}
               className="w-full bg-white text-black font-semibold py-4 rounded-lg hover:bg-black hover:text-white border border-white hover:border-gray-300 transition duration-300"
             >
               Create Your Cosmic Profile
             </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <div className="bg-black border border-gray-700 rounded-lg p-6 text-center hover:border-white transition-colors duration-300">
+              <div className="text-3xl mb-3">🎯</div>
+              <h3 className="text-white font-semibold mb-2">Precision Matters</h3>
+              <p className="text-gray-400 text-sm">Exact birth time and location ensure accurate cosmic calculations</p>
+            </div>
+            
+            <div className="bg-black border border-gray-700 rounded-lg p-6 text-center hover:border-white transition-colors duration-300">
+              <div className="text-3xl mb-3">🔒</div>
+              <h3 className="text-white font-semibold mb-2">Annonymous & Private</h3>
+              <p className="text-gray-400 text-sm">Your personal information is not stored in the database</p>
+            </div>
+            
+            <div className="bg-black border border-gray-700 rounded-lg p-6 text-center hover:border-white transition-colors duration-300">
+              <div className="text-3xl mb-3">✨</div>
+              <h3 className="text-white font-semibold mb-2">Instant Insights</h3>
+              <p className="text-gray-400 text-sm">Receive your personalized reading immediately after creation</p>
+            </div>
           </div>
         </div>
       </div>

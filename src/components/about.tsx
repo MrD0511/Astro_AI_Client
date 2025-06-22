@@ -1,7 +1,6 @@
 import { Mail, Linkedin, Github } from 'lucide-react';
 import NavBar from './navBar';
-import creator from '../assets/creator.jpg'; // Assuming you have a creator image
-import creator_2 from '../assets/creator_2.jpg'; // Assuming you have a second creator image  
+import creator from '../assets/creator.jpg'; // Assuming you have a creator image  
 function AboutPage() {
     const handleNavigation = (path: string) => {
         // Navigation would be handled by your router
@@ -64,7 +63,7 @@ function AboutPage() {
                     </p>
                     <button 
                         className='bg-white text-black py-3 px-8 rounded-lg font-semibold hover:bg-black hover:text-white border-2 border-white hover:border-gray-300 transition-all duration-300 transform hover:scale-105 shadow-lg' 
-                        onClick={() => handleNavigation("/dashboard")}
+                        onClick={() => handleNavigation("/profiles")}
                     >
                         Start Your Cosmic Journey
                     </button>

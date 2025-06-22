@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Menu, X, Star, Calendar, MapPin, MessageSquare, Plus, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { Send, Star, Calendar, MapPin, MessageSquare, Plus, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import NavBar from "./navBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, type BirthDetail, type Chat } from "../../db";
@@ -201,20 +201,21 @@ export default function ChatPage() {
   ];
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-black">
+    <div className="h-screen w-full flex flex-col bg-black">
       <NavBar />
       
       {/* Mobile menu button */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="md:hidden fixed top-1/2 transform -translate-y-1/2 z-50 bg-black/50 border border-gray-600 hover:border-white rounded-lg pr-3 pb-3 pt-3 pl-1 shadow-2xl transition-all duration-300"
+        className="md:hidden fixed top-1/2 transform -translate-y-1/2 z-50 bg-black/5 border border-gray-600 hover:border-white rounded-lg pr-3 pb-3 pt-3 pl-1 shadow-2xl transition-all duration-300"
       >
         {isSidebarOpen ? <ChevronRight size={20} className="text-white" /> : <ChevronLeft size={20} className="text-white" />}
       </button>
 
-      <div className="flex-1 w-full h-full flex md:px-8 py-6 px-4 gap-6 overflow-hidden">
+      <div className="flex-1 w-full h-full flex md:px-8 py-6 px-4 gap-6 overflow-hidden scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700">
         {/* Left Sidebar */}
-        <div className={`w-full md:w-80 h-full flex flex-col bg-gradient-to-b from-gray-900 to-black border border-gray-700 rounded-xl p-6 shadow-2xl transition-transform duration-300 ease-in-out
+        <div className={`w-full md:w-96 h-full flex flex-col bg-gradient-to-b from-gray-900 to-black border border-gray-700 rounded-xl 
+                        p-6 shadow-2xl transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? 'inset-0 z-40 md:relative md:inset-auto translate-x-0' : 'fixed inset-0 z-40 md:relative md:inset-auto -translate-x-full md:translate-x-0 md:flex hidden'}`}>
           
           {/* Profile Header */}
@@ -312,7 +313,7 @@ export default function ChatPage() {
         <div className="flex-1 flex flex-col bg-gradient-to-b from-gray-900 to-black border border-gray-700 rounded-xl shadow-2xl relative h-full overflow-hidden">
           
           {/* Chat Header */}
-          <div className="flex-1 items-center justify-between p-4 border-b border-gray-700 bg-black rounded-t-xl">
+          <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-black rounded-t-xl ">
             <div className="flex items-center gap-3">
               <Sparkles className="text-white" size={20} />
               <h1 className="text-white font-bold text-lg">
@@ -336,7 +337,7 @@ export default function ChatPage() {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="max-w-[85%] rounded-xl p-4 bg-gradient-to-br from-gray-900 to-black text-white border border-gray-700">
+                <div className="max-w-[80%] rounded-xl p-4 bg-gradient-to-br from-gray-900 to-black text-white border border-gray-700">
                   <div className="flex items-center gap-2">
                     <Sparkles size={16} className="text-gray-400 animate-pulse" />
                     <span className="text-gray-400 animate-pulse">Consulting the cosmos...</span>
@@ -350,7 +351,7 @@ export default function ChatPage() {
           {/* Message Input */}
           <div className="p-6 border-t border-gray-700 bg-black rounded-b-xl">
             {/* Suggestions */}
-            <div className="mb-4 overflow-x-auto">
+            <div className="mb-4 overflow-x-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700">
               <div className="flex gap-3 pb-2">
                 {suggestions.map((suggestion, index) => (
                   <button
@@ -365,7 +366,7 @@ export default function ChatPage() {
             </div>
             
             {/* Input Area */}
-            <div className="flex gap-3 items-end">
+            <div className="flex-2 flex gap-3 items-center">
               <div className="flex-1 relative">
                 <textarea
                   value={inputMessage}
@@ -377,7 +378,9 @@ export default function ChatPage() {
                     }
                   }}
                   placeholder="Ask about your cosmic destiny..."
-                  className="w-full bg-gray-900 text-white p-4 rounded-xl border border-gray-600 focus:outline-none focus:border-white focus:ring-2 focus:ring-white/20 resize-none transition-all duration-300"
+                  className="w-full bg-gray-900 text-white p-4 rounded-xl border border-gray-600 
+                            focus:outline-none focus:border-white focus:ring-2 focus:ring-white/20 
+                            resize-none transition-all duration-300 scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700"
                   rows={1}
                   ref={textareaRef}
                   disabled={isLoading}

@@ -30,7 +30,7 @@ function LandingPage() {
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                   <button 
                     className='bg-white text-black py-3 px-6 rounded-lg font-semibold hover:bg-black hover:text-white border-2 border-white hover:border-gray-300 transition-all duration-300 transform hover:scale-105 shadow-lg' 
-                    onClick={() => navigate("/dashboard")}
+                    onClick={() => navigate("/profiles")}
                   >
                     Get Started
                   </button>
