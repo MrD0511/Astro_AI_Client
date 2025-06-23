@@ -61,12 +61,6 @@ function NavBar() {
               className='block w-full text-left text-gray-300 hover:text-white transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-gray-900'
               onClick={() => navigate("/profiles")}
             >
-              Dashboard
-            </button>
-            <button 
-              className='block w-full text-left text-gray-300 hover:text-white transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-gray-900'
-              onClick={() => navigate("/profiles")}
-            >
               Profiles
             </button>
             <button 
