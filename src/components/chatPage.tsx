@@ -94,7 +94,6 @@ export default function ChatPage() {
 
     const fetchMessages = async () => {
       const chatMessages = await db.Messages.where("chat_id").equals(Number(currentChatId)).toArray();
-      console.log("Fetched messages:", chatMessages);
       if (chatMessages.length > 0) {
         setMessages(chatMessages.map(msg => ({ role: msg.role, content: msg.content })));
       }
@@ -165,6 +164,20 @@ export default function ChatPage() {
         if (done) break;
 
         const chunk = decoder.decode(value);
+
+        if (chunk.startsWith("event: session")) {
+          const newSessionId = chunk.split("data:")[1]?.trim();
+          if (newSessionId) {
+            // Save new session ID to state or birthDetail
+            await db.BirthDetails.update(Number(birthDetailId), { session_id: newSessionId });
+
+            if (birthDetail) {
+              birthDetail.session_id = newSessionId;
+            }
+          }
+          continue;
+        }
+
         assistantReply += chunk;
 
         setMessages((prev) => {

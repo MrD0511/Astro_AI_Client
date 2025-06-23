@@ -1,11 +1,10 @@
 import { Mail, Linkedin, Github } from 'lucide-react';
 import NavBar from './navBar';
+import { useNavigate } from 'react-router-dom';
 
 function AboutPage() {
-    const handleNavigation = (path: string) => {
-        // Navigation would be handled by your router
-        console.log(`Navigate to: ${path}`);
-    };
+
+    const navigate = useNavigate();
 
     return (
         <div className="min-h-screen w-full flex flex-col bg-black">
@@ -63,7 +62,7 @@ function AboutPage() {
                     </p>
                     <button 
                         className='bg-white text-black py-3 px-8 rounded-lg font-semibold hover:bg-black hover:text-white border-2 border-white hover:border-gray-300 transition-all duration-300 transform hover:scale-105 shadow-lg' 
-                        onClick={() => handleNavigation("/profiles")}
+                        onClick={() => navigate("/profiles")}
                     >
                         Start Your Cosmic Journey
                     </button>
