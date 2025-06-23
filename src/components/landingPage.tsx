@@ -1,5 +1,4 @@
 import NavBar from "./navBar"
-import astro_illu from '../assets/astro-illu.svg'
 import { useNavigate } from "react-router-dom";
 
 function LandingPage() {
@@ -14,7 +13,7 @@ function LandingPage() {
             <div className='flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-evenly w-full px-4 py-8 lg:py-16 gap-8 lg:gap-0'>
               <div className="order-1 lg:order-1 flex justify-center">
                 <img 
-                  src={astro_illu} 
+                  src="/astro-illu.svg"
                   alt="Astro Illustration" 
                   className='w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 animate-pulse hover:animate-none transition-all duration-300' 
                 />

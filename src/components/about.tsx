@@ -1,6 +1,6 @@
 import { Mail, Linkedin, Github } from 'lucide-react';
 import NavBar from './navBar';
-import creator from '../assets/creator.jpg'; // Assuming you have a creator image  
+
 function AboutPage() {
     const handleNavigation = (path: string) => {
         // Navigation would be handled by your router
@@ -77,7 +77,7 @@ function AboutPage() {
                             <div className="w-full h-full rounded-full bg-gray-800 border-2 border-gray-600 flex items-center justify-center">
                                 {/* <div className="text-6xl lg:text-7xl">👨‍💻</div> */}
                                 <img 
-                                    src={creator} 
+                                    src="/chill-guy-cropped.jpg" 
                                     alt="Creator" 
                                     className="w-full h-full rounded-full object-cover"
                                 />
@@ -99,7 +99,7 @@ function AboutPage() {
                             </p>
                             <div className="w-16 h-1 bg-gradient-to-r from-white to-gray-400 mx-auto lg:mx-0 mb-4"></div>
                             <p className="text-gray-300 text-base leading-relaxed mb-6 max-w-md">
-                                A passionate backend engineer who believes in the fascinating intersection of technology and cosmic wisdom. When not crafting APIs and designing scalable architectures, I explore how ancient wisdom can be enhanced through modern technology.
+                                A passionate backend engineer who enjoys exploring the creative edges of technology. When not building scalable architectures or designing clean APIs, I often experiment with side projects — blending curiosity with code to see what ideas take shape. This website is one such exploration, made more for the joy of building than for any specific purpose.
                             </p>
                         </div>
                         

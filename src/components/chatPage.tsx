@@ -9,7 +9,7 @@ import rehypeRaw from "rehype-raw";
 
 function chatMessage(message: { role: string; content: string }) {
   return (
-    <div className={`max-w-[85%] rounded-xl p-4 shadow-lg ${
+    <div className={`max-w-[90%] md:max-w-[80%] rounded-xl p-4 shadow-lg ${
         message.role === "user" 
           ? "bg-white text-black border-2 border-gray-200" 
           : "bg-gradient-to-br from-gray-900 to-black text-white border border-gray-700"
@@ -213,11 +213,12 @@ export default function ChatPage() {
         {isSidebarOpen ? <ChevronRight size={20} className="text-white" /> : <ChevronLeft size={20} className="text-white" />}
       </button>
 
-      <div className="flex-1 w-full h-full flex md:px-8 py-6 px-4 gap-6 overflow-hidden scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700">
+      <div className="flex-1 w-full h-full flex md:px-4 md:py-6 gap-6 overflow-hidden scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-700">
         {/* Left Sidebar */}
         <div className={`w-full md:w-96 h-full flex flex-col bg-gradient-to-b from-gray-900 to-black border border-gray-700 rounded-xl 
                         p-6 shadow-2xl transition-transform duration-300 ease-in-out
-          ${isSidebarOpen ? 'inset-0 z-40 md:relative md:inset-auto translate-x-0' : 'fixed inset-0 z-40 md:relative md:inset-auto -translate-x-full md:translate-x-0 md:flex hidden'}`}>
+          ${isSidebarOpen ? 'inset-0 z-40 md:relative md:inset-auto translate-x-0'
+           : 'fixed inset-0 z-40 md:relative md:inset-auto -translate-x-full md:translate-x-0 md:flex hidden'}`}>
           
           {/* Profile Header */}
           <div className="flex items-center gap-4 mb-6 p-4 bg-black rounded-lg border border-gray-700">
@@ -314,7 +315,7 @@ export default function ChatPage() {
         <div className="flex-1 flex flex-col bg-gradient-to-b from-gray-900 to-black border border-gray-700 rounded-xl shadow-2xl relative h-full overflow-hidden">
           
           {/* Chat Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-black rounded-t-xl ">
+          <div className="flex items-center justify-between p-2 hidden md:flex border-b border-gray-700 bg-black rounded-t-xl ">
             <div className="flex items-center gap-3">
               <Sparkles className="text-white" size={20} />
               <h1 className="text-white font-bold text-lg">
@@ -338,7 +339,7 @@ export default function ChatPage() {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-xl p-4 bg-gradient-to-br from-gray-900 to-black text-white border border-gray-700">
+                <div className="max-w-[85%] rounded-xl p-4 bg-gradient-to-br from-gray-900 to-black text-white border border-gray-700">
                   <div className="flex items-center gap-2">
                     <Sparkles size={16} className="text-gray-400 animate-pulse" />
                     <span className="text-gray-400 animate-pulse">Consulting the cosmos...</span>
