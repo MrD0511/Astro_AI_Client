@@ -133,11 +133,8 @@ export default function ChatPage() {
     });
 
     try {
-      const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
-      const response = await fetch(`${url}/chat/stream`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+
+      const body = {
           messages: updatedMessages,
           birthDetail: {
             name: birthDetail?.name,
@@ -147,7 +144,14 @@ export default function ChatPage() {
             longitude: birthDetail?.longitude,
           },
           sessionId: birthDetail?.session_id,
-        }),
+        }
+
+
+      const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+      const response = await fetch(`${url}/chat/stream`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
 
       if (!response.body) {
@@ -157,38 +161,45 @@ export default function ChatPage() {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
+      let buffer = "";
       let assistantReply = "";
 
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value);
+        buffer += decoder.decode(value, { stream: true });
 
-        if (chunk.startsWith("event: session")) {
-          const newSessionId = chunk.split("data:")[1]?.trim();
-          if (newSessionId) {
-            // Save new session ID to state or birthDetail
-            await db.BirthDetails.update(Number(birthDetailId), { session_id: newSessionId });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || ""; // save incomplete line for next chunk
 
-            if (birthDetail) {
-              birthDetail.session_id = newSessionId;
+        for (const line of lines) {
+          if (!line.trim()) continue;
+
+          try {
+            const obj = JSON.parse(line);
+
+            if (obj.event === "session") {
+              const id = obj.sessionId;
+              if (birthDetail) {
+                birthDetail.session_id = id;
+                await db.BirthDetails.update(Number(birthDetailId), { session_id: id });
+              }
+            } else if (obj.event === "message") {
+              assistantReply += obj.data;
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                  role: "assistant",
+                  content: assistantReply,
+                };
+                return updated;
+              });
             }
+          } catch (err) {
+            console.error("JSON parse error:", err, line);
           }
-          continue;
         }
-
-        assistantReply += chunk;
-
-        setMessages((prev) => {
-          if (prev.length === 0) return prev;
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            role: "assistant",
-            content: assistantReply,
-          };
-          return updated;
-        });
       }
 
       await db.Messages.add({
